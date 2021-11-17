@@ -1,11 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect,useContext } from 'react';
 import Repos from "./repositories/Repos";
 import Spinner from '../layout/spinner';
+import GithubContext from '../context/github/GithubContext';
 
-const User =({userFunction,userInfo,loading,userRepos,match})=> {
-
+const User =({userRepos,match})=> {
+    const githubContext = useContext(GithubContext);
+    const {loading,user,getUsers,getRepos,repos}=githubContext;
     useEffect(() => {
-        userFunction(match.params.username);
+        getUsers(match.params.username);
+        getRepos(match.params.username);
         // eslint-disable-next-line
     }, [])
 
@@ -23,7 +26,7 @@ const User =({userFunction,userInfo,loading,userRepos,match})=> {
             public_repos,
             public_gists,
             hireable
-        }=userInfo;
+        }=user;
         if (loading) {
             return <Spinner />
         }
@@ -34,7 +37,7 @@ const User =({userFunction,userInfo,loading,userRepos,match})=> {
                         <img src={avatar_url} alt="avatar" style={{width:"100px",borderRadius:"50%"}}/>
                         <h2>{name}</h2>
                         <p>Location: {location}</p>
-                        <p>Hireable: {hireable? <i class="fas fa-check" style={{color:"green"}}></i> : <i class="fas fa-ban" style={{color:"red"}}></i>}</p>
+                        <p>Hireable: {hireable? <i className="fas fa-check" style={{color:"green"}}></i> : <i className="fas fa-ban" style={{color:"red"}}></i>}</p>
                     </div>
                     <div>
                         <div>
@@ -42,7 +45,7 @@ const User =({userFunction,userInfo,loading,userRepos,match})=> {
                             <p>{bio}</p>
                         </div>
                         <div className="my-2">
-                            <a href={html_url} className="btn btn-light text-center" target="_blank" rel="noreferrer">Visit Github Profile</a>
+                            <a href={html_url} className="btn btn-light text-center" target="_blank">Visit Github Profile</a>
                             <ul className="my-2">
                                 <li><strong>Username: </strong>{login}</li>
                                 <li><strong>Company: </strong>{company}</li>
@@ -58,7 +61,7 @@ const User =({userFunction,userInfo,loading,userRepos,match})=> {
                     <div className="badge badge-white">Public Gist: {public_gists}</div>
                 </div>
                 <div className="card">
-                    <Repos repos={userRepos} login={login} />
+                    <Repos repos={repos} login={login} />
                 </div>
             </div>
         )
