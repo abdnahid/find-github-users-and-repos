@@ -50,7 +50,27 @@ const GithubState=props=>{
         const res = await axios.get(`https://api.github.com/users/${username}/repos?per_page=5&sort="updated"&client_id=${clientId}&client_secret=${clientSecret}`);
         dispatch({type:GET_REPOS,payload:res.data});
     }
-    return (<GithubContext.Provider value={{users:state.users,user:state.user,repos:state.repos,loading:state.loading,alert:state.alert,handleSearch,handleClear,getUsers,getRepos}}>
+
+    //set alert
+
+    const handleAlert=(data)=>{
+        if (data ==="") {
+          dispatch({type:SET_ALERT,payload:{msg:"Please type some keyword to show some users",type:"light"}})
+        }
+        setTimeout(()=> dispatch({type:SET_ALERT,payload:null}),3000);
+      }
+    return (<GithubContext.Provider value={{
+            users:state.users,
+            user:state.user,
+            repos:state.repos,
+            loading:state.loading,
+            alert:state.alert,
+            handleSearch,
+            handleClear,
+            getUsers,
+            getRepos,
+            handleAlert
+        }}>
             {props.children}
         </GithubContext.Provider>
     )
